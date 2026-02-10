@@ -1,0 +1,51 @@
+# Slake-VQA Experiment Configuration
+
+dataset:
+  name: slake_vqa
+  train_split: train
+  test_split: test
+  image_size: 224
+  num_workers: 4
+
+model:
+  name: llava_med
+  pretrained: "microsoft/llava-med-v1.5-mistral-7b"
+  max_input_tokens: 710
+  max_output_tokens: 256
+
+training:
+  batch_size: 8
+  learning_rate: 5.0e-5
+  num_epochs: 20
+  warmup_steps: 100
+  dropout: 0.1
+  optimizer: adafactor
+  momentum_beta1: 0.9
+  use_one_shot_exemplar: true
+
+evaluation:
+  metrics:
+    - bleu_1
+    - f1_token
+  paper_baselines:
+    palm_e_84b:
+      bleu_1: 52.65
+      f1: 24.53
+    med_palm_m_12b:
+      bleu_1: 90.77
+      f1: 86.22
+    med_palm_m_84b:
+      bleu_1: 92.70
+      f1: 89.28
+    med_palm_m_562b:
+      bleu_1: 91.64
+      f1: 87.50
+    prior_sota:
+      bleu_1: 78.60
+      f1: 78.10
+
+prompt:
+  instruction: >
+    You are a helpful medical assistant. The following are questions
+    about medical knowledge. Solve them in a step-by-step fashion,
+    referring to authoritative sources as needed.
