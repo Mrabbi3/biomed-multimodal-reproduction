@@ -52,8 +52,16 @@ class BLIP2Wrapper(BaseBiomedModel):
 
         load_kwargs = {}
         if self.load_in_8bit and self.device == "cuda":
-            load_kwargs["load_in_8bit"] = True
-            load_kwargs["device_map"] = "auto"
+            try:
+                from transformers import BitsAndBytesConfig
+                load_kwargs["quantization_config"] = BitsAndBytesConfig(
+                    load_in_8bit=True,
+                )
+                load_kwargs["device_map"] = "auto"
+            except ImportError:
+                print("Warning: BitsAndBytesConfig not available, using float16 instead")
+                load_kwargs["torch_dtype"] = torch.float16
+                self.load_in_8bit = False
         else:
             load_kwargs["torch_dtype"] = torch.float16 if self.device == "cuda" else torch.float32
 

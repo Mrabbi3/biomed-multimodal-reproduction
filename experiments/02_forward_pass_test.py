@@ -110,10 +110,14 @@ def main(args):
     print(f"{'='*60}")
 
     os.makedirs("results/tables", exist_ok=True)
+    # Save as both baseline and vqa_rad so comparison chart picks it up
+    result_data = {"model": args.model, "mode": "zero_shot", **metrics,
+                   "elapsed_seconds": elapsed}
     with open("results/tables/baseline_metrics.json", "w") as f:
-        json.dump({"model": args.model, "mode": "zero_shot", **metrics,
-                    "elapsed_seconds": elapsed}, f, indent=2)
-    print(f"\n✓ Saved to results/tables/baseline_metrics.json")
+        json.dump(result_data, f, indent=2)
+    with open("results/tables/vqa_rad_metrics.json", "w") as f:
+        json.dump(result_data, f, indent=2)
+    print(f"\n✓ Saved to results/tables/")
 
 
 if __name__ == "__main__":

@@ -23,7 +23,16 @@ def load_results(results_dir: str = "results/tables") -> dict:
         if fname.endswith("_metrics.json"):
             dataset_name = fname.replace("_metrics.json", "")
             with open(os.path.join(results_dir, fname)) as f:
-                all_results[dataset_name] = json.load(f)
+                data = json.load(f)
+
+            # Map 'baseline' to 'vqa_rad' so paper baselines are found
+            if dataset_name == "baseline":
+                dataset_name = "vqa_rad"
+
+            # If we already have results for this dataset, keep the fine-tuned one
+            if dataset_name in all_results and all_results[dataset_name].get("mode") == "fine_tuned":
+                continue
+            all_results[dataset_name] = data
 
     return all_results
 
