@@ -119,12 +119,32 @@ class MedVQATrainer:
         try:
             from peft import LoraConfig, get_peft_model, TaskType
 
+            # Auto-detect correct target module names for this model
+            model_modules = [name for name, _ in self.model.named_modules()]
+            
+            # Try common naming conventions
+            if any("q_proj" in m for m in model_modules):
+                target = ["q_proj", "v_proj"]
+            elif any(".q." in m or ".q" == m.split(".")[-1] for m in model_modules):
+                target = ["q", "v"]
+            else:
+                # Fallback: find all linear layers in attention
+                target = ["q", "v"]
+            
+            # Detect task type: encoder-decoder (T5) vs decoder-only
+            if hasattr(self.model, "encoder") or "t5" in str(type(self.model)).lower():
+                task = TaskType.SEQ_2_SEQ_LM
+            else:
+                task = TaskType.CAUSAL_LM
+
+            print(f"  LoRA targets: {target}, task: {task}")
+
             lora_config = LoraConfig(
                 r=self.lora_rank,
                 lora_alpha=32,
-                target_modules=["q_proj", "v_proj"],  # Attention layers
+                target_modules=target,
                 lora_dropout=0.1,
-                task_type=TaskType.CAUSAL_LM,
+                task_type=task,
             )
             self.model = get_peft_model(self.model, lora_config)
 

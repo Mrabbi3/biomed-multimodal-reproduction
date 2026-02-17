@@ -1,0 +1,7 @@
+{
+  "model": "blip2",
+  "mode": "zero_shot",
+  "bleu_1": 0.44,
+  "f1": 0.7,
+  "num_samples": 50
+}

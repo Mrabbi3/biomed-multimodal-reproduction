@@ -1,0 +1,12 @@
+{
+  "with_exemplar": {
+    "bleu_1": 2.54,
+    "f1": 3.86,
+    "num_samples": 100
+  },
+  "without_exemplar": {
+    "bleu_1": 0.95,
+    "f1": 1.52,
+    "num_samples": 100
+  }
+}

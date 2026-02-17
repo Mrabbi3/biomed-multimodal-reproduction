@@ -1,0 +1,8 @@
+{
+  "bleu_1": 26.16,
+  "f1": 26.16,
+  "mode": "fine_tuned",
+  "epochs": 5,
+  "train_samples": 500,
+  "test_samples": 451
+}
